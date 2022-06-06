@@ -19,9 +19,16 @@ namespace NorthTraderAPI.Controllers
         }
 
         [HttpGet]
-        public async Task<List<Customer>> GetAllCustomers()
+        public async Task<List<Customer>> GetAllCustomersAsync()
         {
-            return await _customerContext.GetAllCustomers();
+            return await _customerContext.GetAllCustomersAsync();
         }
+
+        [HttpGet("{id}")]
+        public async Task<Customer?> GetCustomerAsync(string id)
+        {
+            return await _customerContext.GetCustomerAsync(id);
+        }
+
     }
 }

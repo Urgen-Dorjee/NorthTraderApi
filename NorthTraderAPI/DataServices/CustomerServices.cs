@@ -13,9 +13,14 @@ namespace NorthTraderAPI.DataServices
             _context = context;
         }
 
-        public async Task<List<Customer>> GetAllCustomers()
+        public async Task<List<Customer>> GetAllCustomersAsync()
         {
             return await _context.Customers.Include(o=>o.Orders).ToListAsync();
+        }
+
+        public async Task<Customer?> GetCustomerAsync(string id)
+        {
+            return await _context.Customers.FirstOrDefaultAsync(c => c.CustomerId == id);
         }
     }
 }

@@ -29,7 +29,6 @@ namespace NorthTraderAPI.NorthwindServices
         protected override void OnConfiguring(DbContextOptionsBuilder builder)
         {
             var filePath = Path.Combine(Environment.CurrentDirectory, "Northwind.db");
-            Console.WriteLine($"Using {filePath} database");
             builder.UseSqlite($"FileName={filePath}");
         }
 

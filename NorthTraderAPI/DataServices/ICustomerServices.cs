@@ -4,6 +4,8 @@ namespace NorthTraderAPI.DataServices
 {
     public interface ICustomerServices
     {
-        Task<List<Customer>> GetAllCustomers();
+        Task<List<Customer>> GetAllCustomersAsync();
+        Task<Customer?> GetCustomerAsync(string customerId);
+
     }
 }
