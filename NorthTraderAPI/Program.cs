@@ -1,10 +1,15 @@
 using Newtonsoft.Json;
 using NorthTraderAPI;
 using NorthTraderAPI.DataServices;
+using NorthTraderAPI.Exceptions;
 using NorthTraderAPI.NorthwindServices;
 
 var builder = WebApplication.CreateBuilder(args);
-
+builder.Host.ConfigureLogging(log =>
+{
+    log.ClearProviders();
+    log.AddConsole();
+});
 
 builder.Services.AddControllers()
     .AddNewtonsoftJson(opt
@@ -19,7 +24,10 @@ builder.Services.AddSingleton<IDateTime, MachineDateTime>();
 builder.Services.AddScoped<SampleDataSeeder>();
 
 
+
 var app = builder.Build();
+
+//var logger = app.Services.GetRequiredService<ILogger>();
 
 using var scope = app.Services.CreateScope();
 var dbInitializer = scope.ServiceProvider.GetRequiredService<SampleDataSeeder>();

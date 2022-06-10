@@ -6,6 +6,6 @@ namespace NorthTraderAPI.DataServices
     {
         Task<List<Customer>> GetAllCustomersAsync();
         Task<Customer?> GetCustomerAsync(string customerId);
-
+        Task<Customer?> AddCustomer(Customer customer, CancellationToken cancel);
     }
 }

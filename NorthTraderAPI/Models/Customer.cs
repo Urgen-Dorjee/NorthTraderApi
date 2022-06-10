@@ -1,4 +1,6 @@
-﻿namespace NorthTraderAPI.Models
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace NorthTraderAPI.Models
 {
     public class Customer 
     {
@@ -12,6 +14,7 @@
         public string? ContactName { get; set; }
         public string? ContactTitle { get; set; }
         public string? Address { get; set; }
+        [MaxLength(15,ErrorMessage = "City Should not exceed 5 Characters long")]
         public string? City { get; set; }
         public string? Region { get; set; }
         public string? PostalCode { get; set; }

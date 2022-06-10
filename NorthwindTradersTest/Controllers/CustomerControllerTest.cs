@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.Extensions.Logging;
 using Moq;
 using NorthTraderAPI.Controllers;
 using NorthTraderAPI.DataServices;
@@ -11,20 +11,23 @@ namespace NorthwindTradersTest.Controllers
     public class CustomerControllerTest
     {
 
-        private readonly Mock<ICustomerServices> service;
+        private readonly Mock<ICustomerServices> _service;
+      
+        private readonly Mock<ILogger<CustomersController>> _logger;
         public CustomerControllerTest()
         {
-            service = new Mock<ICustomerServices>();
+            _service = new Mock<ICustomerServices>();
+            _logger = new Mock<ILogger<CustomersController>>();
         }
 
 
         [Fact]
-        public void GetAllCustomersAsync()
+        public void Get_All_Customers_Async_Should_Return_All()
         {
             //Arrange
-            service.Setup(customer => customer.GetAllCustomersAsync())
+            _service.Setup(customer => customer.GetAllCustomersAsync())
                 .ReturnsAsync(TestRepo.GetAllCustomers);
-            var controller = new CustomersController(service.Object);
+            var controller = new CustomersController(_service.Object, _logger.Object);
 
             //Act
             var result = controller.GetAllCustomersAsync();
@@ -35,22 +38,44 @@ namespace NorthwindTradersTest.Controllers
         }
 
         [Fact]
-        public void Get_CustomerAsync_Should_Return_Customer_By_Id()
+        public void Get_Customer_Async_Should_Return_A_Customer()
         {
             //Arrange 
             var customers = TestRepo.GetAllCustomers();
-            var firstCustomer = customers[0];
-            service.Setup(c => c.GetCustomerAsync("ALFKI"))
+            var firstCustomer = customers[1];
+            _service.Setup(c => c.GetCustomerAsync("ANATR"))
                 .ReturnsAsync(firstCustomer);
-            var controller = new CustomersController(service.Object);
+            var controller = new CustomersController(_service.Object, _logger.Object);
 
             //Act
-            var actionResult = controller.GetCustomerAsync("ALFKI");
+            var actionResult = controller.GetCustomerAsync("ANATR");
             var result = actionResult.Result;
 
             //Assert
             result.ShouldNotBeNull();
-            result.ShouldNotBeOfType<Task<Customer>>();
+            result.ShouldSatisfyAllConditions(
+                () => result.CustomerId.ShouldNotBeEmpty(),
+                () => result.CustomerId.ShouldBe("ANATR"));
+        }
+
+        [Fact]
+        public void Add_Customer_Async_Should_Return_No_Content()
+        {
+            //Arrange
+            var customer = TestRepo.AddCustomer();
+            _service.Setup(c => c.AddCustomer(customer, CancellationToken.None));
+            var controller = new CustomersController(_service.Object, _logger.Object);
+
+            //Act
+            var actionResult = controller.AddCustomer(customer, CancellationToken.None);
+            var result = actionResult.Result;
+
+            //Assert
+
+            result.ShouldNotBeNull();
+            result.ShouldSatisfyAllConditions(
+                () => result.CustomerId.ShouldNotBeEmpty(),
+                ()=>result.ContactName.ShouldBe("Urgen Dorjee"));
         }
     }
 }

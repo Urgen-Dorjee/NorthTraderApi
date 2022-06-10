@@ -10,12 +10,13 @@ namespace NorthTraderAPI.Controllers
     public class CustomersController : ControllerBase
     {
         private readonly ICustomerServices _customerContext;
+        private readonly ILogger<CustomersController> _logger;
 
-      
-        public CustomersController(ICustomerServices customerContext)
+
+        public CustomersController(ICustomerServices customerContext, ILogger<CustomersController> logger)
         {
             _customerContext = customerContext;
-           
+            _logger = logger;
         }
 
         [HttpGet]
@@ -30,5 +31,13 @@ namespace NorthTraderAPI.Controllers
             return await _customerContext.GetCustomerAsync(id);
         }
 
+        [HttpPost]
+        public async Task<Customer?> AddCustomer([FromBody] Customer customer, CancellationToken cancel)
+        {
+            if (!ModelState.IsValid) return customer;
+            _logger.LogInformation("Adding a Customer in the database");
+            await _customerContext.AddCustomer(customer, cancel);
+            return customer;
+        }
     }
 }

@@ -37,5 +37,26 @@ public static class TestRepo
         };
         return customers;
     }
+
+    public static Customer AddCustomer()
+    {
+        var customer = new Customer
+        {
+            CustomerId = "UREAL", 
+            Address = "2134 Near Lower TCV", 
+            City = "Dharamshala Lower TCV should not exceed fifteen characters",
+            CompanyName = "Great Lakes Food Market", 
+            ContactName = "Urgen Dorjee", 
+            ContactTitle = "Software Manager",
+            Country = "USA", 
+            Fax = "807-663-4747",
+            Phone = "(503) 555-7555", 
+            PostalCode = "95348", 
+            Region = "CA"
+        };
+        return customer;
+    }
 }
+
+
 
