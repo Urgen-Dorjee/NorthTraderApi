@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.JsonPatch;
+using Microsoft.AspNetCore.Mvc;
 using NorthTraderAPI.DataServices;
 using NorthTraderAPI.Models;
 
@@ -25,9 +26,10 @@ namespace NorthTraderAPI.Controllers
         /// </summary>
         /// <returns>It returns all the customer information from the database</returns>
         [HttpGet]
-        public async Task<List<Customer>> GetAllCustomersAsync()
+        public async Task<List<Customer>> GetAllCustomers()
         {
-            return await _customerContext.GetAllCustomersAsync();
+            var customers= await _customerContext.GetAllCustomersAsync();
+            return customers;
         }
 
         /// <summary>
@@ -38,7 +40,7 @@ namespace NorthTraderAPI.Controllers
         /// <exception cref="KeyNotFoundException"></exception>
 
         [HttpGet("{id}")]
-        public async Task<Customer?> GetCustomerAsync(string id)
+        public async Task<IActionResult?> GetCustomer(string id)
         {
             _logger.LogInformation($"Retrieving Customer Info of ID: {id}");
             var customer = await _customerContext.GetCustomerAsync(id);
@@ -46,7 +48,7 @@ namespace NorthTraderAPI.Controllers
             {
                 throw new KeyNotFoundException($"Did not find a user of ID: {id}");
             }
-            return customer;
+            return Ok(customer);
 
         }
         /// <summary>
@@ -58,12 +60,30 @@ namespace NorthTraderAPI.Controllers
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<Customer?> AddCustomer([FromBody] Customer customer, CancellationToken cancel)
+        public async Task<IActionResult> AddCustomer([FromBody] Customer customer, CancellationToken cancel)
         {
-            if (!ModelState.IsValid) return customer;
+            if (!ModelState.IsValid) return BadRequest();
             _logger.LogInformation("Adding a Customer in the database");
-            await _customerContext.AddCustomer(customer, cancel);
-            return customer;
+            await _customerContext.AddCustomerAsync(customer, cancel);
+            return Ok(customer);
+        }
+        /// <summary>
+        /// Updating the customer records
+        /// </summary>
+        /// <param name="customerId"></param>
+        /// <param name="customer"></param>
+        /// <param name="cancel"></param>
+        /// <returns>Returns Updated customer records</returns>
+
+        [HttpPut("{customerId}")]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> UpdateCustomer(string customerId, [FromBody]Customer customer, CancellationToken cancel)
+        {
+            var response = await _customerContext.GetCustomerAsync(customerId);
+            if (response!.CustomerId != customer.CustomerId) return BadRequest();
+            await _customerContext.UpdateCustomerAsync(customer, cancel);
+            return Ok(customer);
         }
     }
 }

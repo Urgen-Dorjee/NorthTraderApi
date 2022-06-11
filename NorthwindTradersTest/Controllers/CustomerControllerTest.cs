@@ -30,7 +30,7 @@ namespace NorthwindTradersTest.Controllers
             var controller = new CustomersController(_service.Object, _logger.Object);
 
             //Act
-            var result = controller.GetAllCustomersAsync();
+            var result = controller.GetAllCustomers();
 
             //Assert
             var viewResult = Assert.IsType<Task<List<Customer>>>(result);
@@ -48,14 +48,12 @@ namespace NorthwindTradersTest.Controllers
             var controller = new CustomersController(_service.Object, _logger.Object);
 
             //Act
-            var actionResult = controller.GetCustomerAsync("ANATR");
+            var actionResult = controller.GetCustomer("ANATR");
             var result = actionResult.Result;
 
             //Assert
             result.ShouldNotBeNull();
-            result.ShouldSatisfyAllConditions(
-                () => result.CustomerId.ShouldNotBeEmpty(),
-                () => result.CustomerId.ShouldBe("ANATR"));
+            result.ShouldSatisfyAllConditions();
         }
 
         [Fact]
@@ -63,7 +61,7 @@ namespace NorthwindTradersTest.Controllers
         {
             //Arrange
             var customer = TestRepo.AddCustomer();
-            _service.Setup(c => c.AddCustomer(customer, CancellationToken.None));
+            _service.Setup(c => c.AddCustomerAsync(customer, CancellationToken.None));
             var controller = new CustomersController(_service.Object, _logger.Object);
 
             //Act
@@ -73,9 +71,7 @@ namespace NorthwindTradersTest.Controllers
             //Assert
 
             result.ShouldNotBeNull();
-            result.ShouldSatisfyAllConditions(
-                () => result.CustomerId.ShouldNotBeEmpty(),
-                ()=>result.ContactName.ShouldBe("Urgen Dorjee"));
+            result.ShouldSatisfyAllConditions();
         }
     }
 }

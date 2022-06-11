@@ -39,7 +39,7 @@ namespace NorthTraderAPI.NorthwindServices
         }
 
 
-        public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = new CancellationToken())
+        public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = new())
         {
             foreach (var entry in ChangeTracker.Entries<AuditableEntity>())
             {
@@ -52,6 +52,19 @@ namespace NorthTraderAPI.NorthwindServices
                     case EntityState.Modified:
                         entry.Entity.LastModified = _dateTime.Now;
                         break;
+                   
+                    case EntityState.Deleted:
+                        entry.Entity.LastModified = _dateTime.Now;
+                        break;
+
+                    case EntityState.Detached:
+                        entry.Entity.LastModified = _dateTime.Now;
+                        break;
+
+                    case EntityState.Unchanged:
+                        entry.Entity.LastModified = _dateTime.Now;
+                        break;
+
                 }
             }
 
