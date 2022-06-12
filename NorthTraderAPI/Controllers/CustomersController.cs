@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.JsonPatch;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using NorthTraderAPI.DataServices;
 using NorthTraderAPI.Models;
 
@@ -28,25 +27,24 @@ namespace NorthTraderAPI.Controllers
         [HttpGet]
         public async Task<List<Customer>> GetAllCustomers()
         {
-            var customers= await _customerContext.GetAllCustomersAsync();
-            return customers;
+            return await _customerContext.GetAllCustomersAsync();
         }
 
         /// <summary>
         /// Retrieving a Customer with specified ID
         /// </summary>
-        /// <param name="id"></param>
+        /// <param name="customerId"></param>
         /// <returns>It returns a customer info from database</returns>
         /// <exception cref="KeyNotFoundException"></exception>
 
-        [HttpGet("{id}")]
-        public async Task<IActionResult?> GetCustomer(string id)
+        [HttpGet("{customerId}")]
+        public async Task<IActionResult?> GetCustomer(string customerId)
         {
-            _logger.LogInformation($"Retrieving Customer Info of ID: {id}");
-            var customer = await _customerContext.GetCustomerAsync(id);
+            _logger.LogInformation($"Retrieving Customer Info of ID: {customerId}");
+            var customer = await _customerContext.GetCustomerAsync(customerId);
             if (customer is null)
             {
-                throw new KeyNotFoundException($"Did not find a user of ID: {id}");
+                throw new KeyNotFoundException($"Did not find a user of ID: {customerId}");
             }
             return Ok(customer);
 
@@ -77,13 +75,28 @@ namespace NorthTraderAPI.Controllers
 
         [HttpPut("{customerId}")]
         [ProducesResponseType(StatusCodes.Status201Created)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> UpdateCustomer(string customerId, [FromBody]Customer customer, CancellationToken cancel)
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<IActionResult> UpdateCustomer(string customerId, [FromBody] Customer customer, CancellationToken cancel)
         {
             var response = await _customerContext.GetCustomerAsync(customerId);
             if (response!.CustomerId != customer.CustomerId) return BadRequest();
             await _customerContext.UpdateCustomerAsync(customer, cancel);
             return Ok(customer);
+        }
+        /// <summary>
+        /// Delete a customer record from the database
+        /// </summary>
+        /// <param name="customerId"></param>
+
+        [HttpDelete("{customerId}")]
+        public void DeleteCustomer(string customerId)
+        {
+            if (ModelState.IsValid)
+            {
+                _logger.LogInformation($"Deleting customer record of ID: {customerId}");
+                _customerContext.DeleteCustomerAsync(customerId);
+            }
         }
     }
 }

@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.JsonPatch;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using NorthTraderAPI.Models;
 using NorthTraderAPI.NorthwindServices;
 
@@ -37,6 +36,12 @@ namespace NorthTraderAPI.DataServices
             await _context.SaveChangesAsync(cancel);
             return customer;
         }
+
+        public void DeleteCustomerAsync(string customerId)
+        {
+            var customer = _context.Customers.FirstOrDefault(c => c.CustomerId == customerId);
+            _context.Customers.Remove(customer!);
+            _context.SaveChanges();
+        }
     }
 }
-    

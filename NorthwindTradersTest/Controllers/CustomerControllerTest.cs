@@ -1,10 +1,12 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using Moq;
 using NorthTraderAPI.Controllers;
 using NorthTraderAPI.DataServices;
 using NorthTraderAPI.Models;
 using NorthwindTradersTest.DataServices;
 using Shouldly;
+using Xunit.Sdk;
 
 namespace NorthwindTradersTest.Controllers
 {
@@ -35,6 +37,7 @@ namespace NorthwindTradersTest.Controllers
             //Assert
             var viewResult = Assert.IsType<Task<List<Customer>>>(result);
             Assert.Equal(4, viewResult.Result.Count);
+
         }
 
         [Fact]
@@ -57,7 +60,7 @@ namespace NorthwindTradersTest.Controllers
         }
 
         [Fact]
-        public void Add_Customer_Async_Should_Return_No_Content()
+        public void Add_Customer_Async_Should_Return_Content_Created_201()
         {
             //Arrange
             var customer = TestRepo.AddCustomer();
