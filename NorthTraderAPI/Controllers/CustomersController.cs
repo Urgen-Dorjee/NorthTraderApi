@@ -21,7 +21,7 @@ namespace NorthTraderAPI.Controllers
         }
 
         /// <summary>
-        /// Display a list of all Customers
+        /// { Display a list of all Customers }
         /// </summary>
         /// <returns>It returns all the customer information from the database</returns>
         [HttpGet]
@@ -31,7 +31,7 @@ namespace NorthTraderAPI.Controllers
         }
 
         /// <summary>
-        /// Retrieving a Customer with specified ID
+        /// { Retrieving a Customer record by customerId }
         /// </summary>
         /// <param name="customerId"></param>
         /// <returns>It returns a customer info from database</returns>
@@ -50,7 +50,7 @@ namespace NorthTraderAPI.Controllers
 
         }
         /// <summary>
-        /// Adding a Customer to a database
+        /// { Adding a Customer to a database }
         /// </summary>
         /// <param name="customer"></param>
         /// <param name="cancel"></param>
@@ -66,7 +66,7 @@ namespace NorthTraderAPI.Controllers
             return Ok(customer);
         }
         /// <summary>
-        /// Updating the customer records
+        /// { Updating the customer records }
         /// </summary>
         /// <param name="customerId"></param>
         /// <param name="customer"></param>
@@ -85,7 +85,7 @@ namespace NorthTraderAPI.Controllers
             return Ok(customer);
         }
         /// <summary>
-        /// Delete a customer record from the database
+        /// { Delete a customer record from the database }
         /// </summary>
         /// <param name="customerId"></param>
 
