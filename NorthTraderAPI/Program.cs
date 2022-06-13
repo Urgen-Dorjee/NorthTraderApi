@@ -23,7 +23,7 @@ builder.Services.AddSwaggerGen(opt =>
     opt.SwaggerDoc("v1", new OpenApiInfo
     {
         Version = "v1",
-        Title = "NorthwindTraderAPI",
+        Title = "NorthTradingAPI",
         Description = "Northwind Trading Co.",
         Contact = new OpenApiContact
         {

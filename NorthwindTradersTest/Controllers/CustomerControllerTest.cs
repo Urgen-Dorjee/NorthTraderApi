@@ -76,5 +76,22 @@ namespace NorthwindTradersTest.Controllers
             result.ShouldNotBeNull();
             result.ShouldSatisfyAllConditions();
         }
+
+        [Fact]
+        public void Delete_Async_Customer_Should_Return_Success()
+        {
+
+            //Arrange 
+            const string custId = "URGEN";
+            _service.Setup(c => c.DeleteCustomerAsync(custId));
+            var controller = new CustomersController(_service.Object, _logger.Object);
+
+            //Act
+            controller.DeleteCustomer(custId);
+
+            //Assert
+            _service.Verify(c=>c.DeleteCustomerAsync(custId),Times.Once);
+
+        }
     }
 }

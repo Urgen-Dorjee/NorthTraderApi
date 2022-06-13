@@ -6,7 +6,7 @@ namespace NorthTraderAPI.Controllers
 {
 
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/[controller]/{customerId}")]
     [Produces("application/json")]
     public class CustomersController : ControllerBase
     {
@@ -37,7 +37,7 @@ namespace NorthTraderAPI.Controllers
         /// <returns>It returns a customer info from database</returns>
         /// <exception cref="KeyNotFoundException"></exception>
 
-        [HttpGet("{customerId}")]
+        [HttpGet]
         public async Task<IActionResult?> GetCustomer(string customerId)
         {
             _logger.LogInformation($"Retrieving Customer Info of ID: {customerId}");
@@ -73,7 +73,7 @@ namespace NorthTraderAPI.Controllers
         /// <param name="cancel"></param>
         /// <returns>Returns Updated customer records</returns>
 
-        [HttpPut("{customerId}")]
+        [HttpPut]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -89,7 +89,7 @@ namespace NorthTraderAPI.Controllers
         /// </summary>
         /// <param name="customerId"></param>
 
-        [HttpDelete("{customerId}")]
+        [HttpDelete]
         public void DeleteCustomer(string customerId)
         {
             if (ModelState.IsValid)
