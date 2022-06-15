@@ -8,6 +8,7 @@ namespace NorthTraderAPI
     {
 
         private readonly NorthwindDbContext _context;
+        
 
         private readonly Dictionary<int, Employee> Employees = new Dictionary<int, Employee>();
         private readonly Dictionary<int, Supplier> Suppliers = new Dictionary<int, Supplier>();
@@ -15,41 +16,48 @@ namespace NorthTraderAPI
         private readonly Dictionary<int, Shipper> Shippers = new Dictionary<int, Shipper>();
         private readonly Dictionary<int, Product> Products = new Dictionary<int, Product>();
 
-        public SampleDataSeeder(NorthwindDbContext context)
+        private readonly ILogger<SampleDataSeeder> _logger;
+        public SampleDataSeeder(NorthwindDbContext context, ILogger<SampleDataSeeder> logger)
         {
             _context = context;
-          
+            _logger = logger;
         }
 
         public async Task SeedAllAsync(CancellationToken cancellationToken)
         {
-            _context.Database.EnsureDeleted();
-            _context.Database.EnsureCreated();
+            //_context.Database.EnsureDeleted();
+            //_context.Database.EnsureCreated();
 
             if (_context.Customers.Any())
             {
+                _logger.LogInformation("Number of records in the Customer's database : {Count}", _context.Customers.Count());
                 return;
             }
+            else
+            {
+                _context.Database.EnsureDeleted();
+                _context.Database.EnsureCreated();
 
-            await SeedCustomersAsync(cancellationToken);
+                await SeedCustomersAsync(cancellationToken);
 
-            await SeedRegionsAsync(cancellationToken);
+                await SeedRegionsAsync(cancellationToken);
 
-            await SeedTerritoriesAsync(cancellationToken);
+                await SeedTerritoriesAsync(cancellationToken);
 
-            await SeedEmployeesAsync(cancellationToken);
+                await SeedEmployeesAsync(cancellationToken);
 
-            await SeedCategoriesAsync(cancellationToken);
+                await SeedCategoriesAsync(cancellationToken);
 
-            await SeedShippersAsync(cancellationToken);
+                await SeedShippersAsync(cancellationToken);
 
-            await SeedSuppliersAsync(cancellationToken);
+                await SeedSuppliersAsync(cancellationToken);
 
-            await SeedProductsAsync(cancellationToken);
+                await SeedProductsAsync(cancellationToken);
 
-            await SeedOrdersAsync(cancellationToken);
+                await SeedOrdersAsync(cancellationToken);
 
-           // await SeedUsersAsync(cancellationToken);
+                // await SeedUsersAsync(cancellationToken);
+            }
         }
 
         private async Task SeedUsersAsync(CancellationToken cancellationToken)

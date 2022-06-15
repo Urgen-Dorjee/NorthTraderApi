@@ -7,8 +7,8 @@ namespace NorthTraderAPI.Controllers
 
     [Route("[controller]")]
     [ApiController]
-    [ApiVersion("1.0")]
-    [ApiVersion("1.1")]
+   // [ApiVersion("1.0")]
+   // [ApiVersion("1.1")]
     [Produces("application/json")]
     public class CustomersController : ControllerBase
     {

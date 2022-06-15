@@ -11,11 +11,6 @@ using Swashbuckle.AspNetCore.SwaggerGen;
 using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
-builder.Host.ConfigureLogging(log =>
-{
-    log.ClearProviders();
-    log.AddConsole();
-});
 
 builder.Services.AddControllers().AddNewtonsoftJson(opt => opt.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore);
 builder.Services.AddEndpointsApiExplorer();
