@@ -27,9 +27,9 @@ namespace NorthTraderAPI.Controllers
         /// </summary>
         /// <returns>It returns all the customer information from the database</returns>
         [HttpGet("/customers", Name = nameof(GetAllCustomers))]
-        public async Task<List<Customer>> GetAllCustomers()
+        public async Task<ActionResult<List<Customer>>> GetAllCustomers()
         {
-            return await _customerContext.GetAllCustomersAsync();
+            return await Task.FromResult(Ok(_customerContext.GetAllCustomersAsync()));
         }
 
         /// <summary>
@@ -40,13 +40,15 @@ namespace NorthTraderAPI.Controllers
         /// <exception cref="KeyNotFoundException"></exception>
 
         [HttpGet("/customers/{customerId}", Name =nameof(GetCustomer))]
-        public async Task<IActionResult?> GetCustomer(string customerId)
+        public async Task<ActionResult?> GetCustomer(string customerId)
         {
-            _logger.LogInformation($"Retrieving Customer Info of ID: {customerId}");
+            _logger.LogInformation($"Retrieving a Customer Info of CustomerID: {customerId}");
             var customer = await _customerContext.GetCustomerAsync(customerId);
             if (customer is null)
             {
-                throw new KeyNotFoundException($"Did not find a user of ID: {customerId}");
+                _logger.LogError("There is no such record exists of {CustomerID}", customerId);
+                throw new KeyNotFoundException($"Did not find a any record of CustomerID: {customerId}");
+               
             }
             return Ok(customer);
 
@@ -60,12 +62,11 @@ namespace NorthTraderAPI.Controllers
         [HttpPost("/customers", Name =nameof(AddCustomer))]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> AddCustomer([FromBody] Customer customer, CancellationToken cancel)
+        public async Task<ActionResult> AddCustomer([FromBody] Customer customer, CancellationToken cancel)
         {
             if (!ModelState.IsValid) return BadRequest();
             _logger.LogInformation("Adding a Customer in the database");
-            await _customerContext.AddCustomerAsync(customer, cancel);
-            return Ok(customer);
+             return await  Task.FromResult(Ok(_customerContext.AddCustomerAsync(customer, cancel)));
         }
         /// <summary>
         /// { Updating the customer records }
@@ -79,12 +80,12 @@ namespace NorthTraderAPI.Controllers
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<IActionResult> UpdateCustomer([FromRoute]string customerId, [FromBody] Customer customer, CancellationToken cancel)
+        public async Task<ActionResult> UpdateCustomer([FromRoute]string customerId, [FromBody] Customer customer, CancellationToken cancel)
         {
             var response = await _customerContext.GetCustomerAsync(customerId);
             if (response!.CustomerId != customer.CustomerId) return BadRequest();
-            await _customerContext.UpdateCustomerAsync(customer, cancel);
-            return Ok(customer);
+            return await Task.FromResult(Ok(_customerContext.UpdateCustomerAsync(customer, cancel)));
+            
         }
         /// <summary>
         /// { Delete a customer record from the database }
